@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <link href="../content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="../content/estilo.css" />
+  <title>PRECIS</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">PRECIS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <button class="btn btn-outline-default my-2 my-sm-0" onClick="manual()">Ajuda</button>
+      </form>
+    </div>
+  </nav>
+
+  <div class="container">
+    <form name="form1">
+      <fieldset>
+        <div class="row">
+          <div class="col-md-2">
+            <label for="variaveis" class="lbl1">Quantas variáveis?</label>
+          </div>
+          <div class="col-md-1">
+            <input type="number" class="inp1" maxlength="10" id="in1" name="variaveis" value="" min="1" autocomplete="off"
+              autofocus />
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-md-2">
+            <label for="regras" class="lbl1">Quantas restrições?</label>
+          </div>
+          <div class="col-md-2">
+            <input type="number" class="inp1" maxlength="10" id="in2" name="regras" value="" min="1" autocomplete="off"
+            />
+
+            <input type="button" class="inp1 btn btn-primary btn-sm" id="btn1" name="ok" value="OK" onClick="criarForm(variaveis.value,regras.value)"
+            />
+          </div>
+        </div>
+      </fieldset>
+    </form>
+
+    <br/>
+    <form action="" method="post" name="form2" id="form2" style="display:none">
+      <p>
+        <b>Função objetivo</b>
+      </p>
+      <div id="aqui"></div>
+      <br/>
+      <label>
+        <input type="button" class="btn btn-primary btn-sm" id="btn2" name="calc" value="Resolver" onClick="resolver()" />
+      </label>
+      <label>
+        <input type="reset" class="btn btn-success btn-sm" id="btn3" name="novo" value="Novo" onClick="atualizar()" />
+      </label>
+    </form>
+
+    <div id="tab" style="width: 80%; margin: 0 auto;"></div>
+    <label>
+      <input type="hidden" class="btn btn-success btn-sm" id="btn4" name="novo2" value="Novo" onClick="atualizar()" />
+    </label>
+  </div>
+</body>
+<script type="text/javascript" src="../scripts/funcoes.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../scripts/fraction.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../content/bootstrap/js/bootstrap.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../content/bootstrap/js/bootstrap.bundle.min.js" charset="UTF-8"></script>
+
+</html>
