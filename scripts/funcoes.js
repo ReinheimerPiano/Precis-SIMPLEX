@@ -33,7 +33,10 @@ function calcMatriz(p_matriz) {
 	}
 	var v_in = p_matriz[0][indMaior];
 	var v_out = p_matriz[indMenor][0];
+	document.getElementById("tab").innerHTML+="<p>Troca B: entra "+v_in.substr(0,1)+"<sub>"+v_in.substr(1,1)+"</sub> e sai "+v_out.substr(0,1)+"<sub>"+v_out.substr(1,1)+"</sub></p>";
 	p_matriz[indMenor][0] = p_matriz[0][indMaior];
+	
+	printTabela(p_matriz);
 	
 	var aux = p_matriz[indMenor][indMaior];
 	if (aux != 1) {
@@ -42,6 +45,8 @@ function calcMatriz(p_matriz) {
 		}
 		var fracao = new Fraction(1/aux);
 		var numFormatado = fracao.toFraction();
+		document.getElementById("tab").innerHTML+="<p>Linha "+indMenor+" = Linha "+indMenor+" * "+numFormatado+"</p>";
+		printTabela(p_matriz);
 	}
 
 	for (i = 1; i <= nLinhas; i++) {
@@ -52,6 +57,8 @@ function calcMatriz(p_matriz) {
 			}
 			var fracao = new Fraction(-1*aux);
 			var numFormatado = fracao.toFraction();
+			document.getElementById("tab").innerHTML+="<p>Linha "+i+" = Linha "+i+" + ("+numFormatado+") * Linha "+indMenor+"</p>";
+			printTabela(p_matriz);
 		}
 	}
 }
@@ -134,27 +141,43 @@ function criarForm(p_variaveis, p_restricoes) {
 		}
 	}
 	if (p_variaveis > 0 && p_restricoes > 0) {
+	var strvariavel = ""
+
+	var strrestricao = ""
+
+		document.getElementById("varinicial").style.display = 'none';
 		document.getElementById("form2").style.display = 'block';
-		document.getElementById("aqui").innerHTML+="<span>Z = </span>";
-		document.getElementById("aqui").innerHTML+="<input type='number' class='inputZ' required autocomplete='off' size='5' maxlength='10' step='0.1' id='y1' name='y1' />x<sub>1</sub>";
+		document.getElementById("aqui").style.display = 'block';
+
+		strvariavel+="<form class='form-group row mb-5' >"
+		strvariavel+="<label class='col-form-label'>Z = </label>";
+		strvariavel+="<input style='width: 100px' type='number' class='inputZ form-control' required autocomplete='off' size='15' maxlength='10' id='y1' name='y1' /> <label class='col-form-label'> x</label><sub>1</sub>";
 		for (var h = 2; h <= p_variaveis; h++) {
-			document.getElementById("aqui").innerHTML+=" + <input type='number' class='inputZ' required autocomplete='off' size='5' maxlength='10' step='0.1' id='y"+h+"' name='y"+h+"' />x<sub>"+h+"</sub>";
+			strvariavel+=" + <input style='width: 100px' type='number' class='inputZ form-control ' required autocomplete='off' size='15' maxlength='10' id='y"+h+"' name='y"+h+"' /> x<sub>"+h+"</sub>";
 		}
+		strvariavel+="</form>";
+		document.getElementById("aqui").innerHTML+= strvariavel;
+
+
 		for (var i = 1; i <= p_restricoes; i++) {
-			document.getElementById("aqui").innerHTML+="<p><b>Restrição "+i+"</b></p>";
-			document.getElementById("aqui").innerHTML+="<input type='number' class='input' required autocomplete='off' size='5' maxlength='10' step='0.1' id='x"+i+"1' name='x"+i+"1' />x<sub>1</sub>";
+			strrestricao+="<p>Restrição "+i+"</p>";
+			strrestricao+="<form class='form-group row mb-3' >"
+			strrestricao+="<input style='width: 100px' type='number' class='input form-control' required autocomplete='off' size='15' maxlength='10' id='x"+i+"1' name='x"+i+"1' /><label class='col-form-label'> x</label><sub>1</sub>";
 			for (var j = 2; j <= p_variaveis; j++) {
-				document.getElementById("aqui").innerHTML+=" + <input type='number' class='input' required autocomplete='off' size='5' maxlength='10' step='0.1' id='x"+i+j+"' name='x"+i+j+"' />x<sub>"+j+"</sub>";
+				strrestricao+=" + <input style='width: 100px' type='number' class='input form-control' required autocomplete='off' size='15' maxlength='10' id='x"+i+j+"' name='x"+i+j+"' /> x<sub>"+j+"</sub>";
 			}
-			document.getElementById("aqui").innerHTML+="<span> <= </span>"
-			+"<input type='number' class='input' required size='5' maxlength='10' id='b"+i+"' name='b"+i+"' style='text-align:left' />";
+			strrestricao+="<span> <= </span>"
+			+"<input style='width: 100px' type='number' class='input form-control' required size='15' maxlength='10' id='b"+i+"' name='b"+i+"' style='text-align:left' />";
+			strrestricao+="</form>";
 		}
-		document.getElementById("aqui").innerHTML+="<p><b>Restrição "+(++p_restricoes)+"</b></p>"
+		document.getElementById("aqui").innerHTML+= strrestricao
+
+
+		document.getElementById("aqui").innerHTML+="<p>Restrição "+(++p_restricoes)+"</p>"
 		+"<p>x<sub>i</sub> >= 0</p>";
 		document.getElementById("btn1").style.display = 'none';
 		document.getElementById("in1").disabled = true;
 		document.getElementById("in2").disabled = true;
-		document.getElementById('y1').focus();
 	}
 } 
 
@@ -166,6 +189,7 @@ function printTabela(p_matriz) {
 	var tabela = document.createElement("table");
 	tabela.className = "table table-striped";
 	var thead = document.createElement("thead");
+	thead.className = "bg-primary text-white";
 	var tbody=document.createElement("tbody");
   
 	var tr = document.createElement("tr");
@@ -221,11 +245,11 @@ function printTabela(p_matriz) {
 
 	tabela.appendChild(thead);
 	tabela.appendChild(tbody);
-	tabela.border = 1;
 	document.getElementById("tab").appendChild(tabela);
 }
 
-function resolver() {
+// Botão PASSO A PASSO
+$("#btnPass").on("click",function(e) {
 	var restricoes = parseInt(document.form1.regras.value);
 	var variaveis = parseInt(document.form1.variaveis.value);	
 	var linhas = parseInt(document.form1.regras.value) + 1;
@@ -236,12 +260,12 @@ function resolver() {
 	}
 	esconder(variaveis, restricoes);
 	
-	document.getElementById("btn2").style.display = 'none';
+	document.getElementById("btnPass").style.display = 'none';
 	document.getElementById("btn3").style.display = 'none';
 	document.getElementById("tab").innerHTML+="<h2>Resolução</h2>";
 	document.getElementById("tab").innerHTML+="<hr/>";
 	matriz = [[]];
-	matriz[0][0] = 'VB';
+	matriz[0][0] = 'Base';
 	
 	var indice = 1;
 	for (var l = 1; l <= variaveis; l++) {
@@ -290,8 +314,11 @@ function resolver() {
 	}
 	matriz[linhas][coluna] = 0;
 
+	printTabela(matriz);
+
 	var ite = 1;
 	while (condicaoParada(matriz)) {
+		document.getElementById("tab").innerHTML+="<p><b>Iteração "+ite+"</b></p>";
 		calcMatriz(matriz);
 		ite++;
 	}
@@ -319,4 +346,4 @@ function resolver() {
 	solucao += " e Z = "+z;
 	document.getElementById("tab").innerHTML+="<p><b>"+solucao+"</b></p>";
 	document.getElementById("btn4").type = 'button';
-}
+});
