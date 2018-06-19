@@ -63,24 +63,6 @@ function calcMatriz(p_matriz) {
 	}
 }
 
-function esconder(p_variaveis, p_restricoes) {
-	for (i = 1; i <= p_variaveis; i++) {
-		document.getElementById('y'+i).style = "-moz-appearance:textfield;";
-		document.getElementById('y'+i).style.border = "0";
-		document.getElementById('y'+i).readOnly = true;
-		for (j = 1; j <= p_restricoes; j++) {
-			document.getElementById('x'+j+i).style = "-moz-appearance:textfield;";
-			document.getElementById('x'+j+i).style.border = "0";
-			document.getElementById('x'+j+i).readOnly = true;
-		}
-	}
-	for (j = 1; j <= p_restricoes; j++) {
-		document.getElementById('b'+j).style = "-moz-appearance:textfield;";
-		document.getElementById('b'+j).style.border = "0";
-		document.getElementById('b'+j).readOnly = true;
-	}
-}
-
 function validarCoeficientes(p_variaveis, p_restricoes) {
 	for (i = 1; i <= p_variaveis; i++) {
 		if (document.getElementById('y'+i).value == "") {
@@ -107,24 +89,6 @@ function validarCoeficientes(p_variaveis, p_restricoes) {
 
 function atualizar() {
 	window.location.href='../simplex/simplex.html';
-}
-
-function manual() {
-	var texto = 'PRECIS\n\n'
-	+'Informe o número de variáveis (mínimo 1)\n'
-+'Informe o número de restrições (mínimo 1)\n'
-+'obs.: NÃO contar com a restrição Xi >= 0\n'
-+'Clique no botão "OK"\n'
-+'- Vai aparecer na tela o local para informar os valores dos coeficientes.\n'
-+'Informe os valores dos coeficientes das variáveis na função objetivo\n'
-+'Informe os valores dos coeficientes e da constante nas restrições\n'
-+'Clique no botão "Resolver"\n'
-+'- Vai aparecer na tela o passo a passo da resolução informando a operação realizada antes da tabela.\n'
-+'- No final é exibido os valores das variáveis e o valor resultante da função objetivo.\n'
-+'Clique no botão "Novo" para resolver outro problema.\n\n'
-+'observações: O sistema só resolve problemas de maximização,\n'
-+'com restrições de sinal "<=" e com constantes maiores que zero.';
-	alert(texto);
 }
 
 function criarForm(p_variaveis, p_restricoes) {
@@ -254,14 +218,18 @@ $("#btnPass").on("click",function(e) {
 	var variaveis = parseInt(document.form1.variaveis.value);	
 	var linhas = parseInt(document.form1.regras.value) + 1;
 	var colunas = parseInt(document.form1.variaveis.value) + parseInt(document.form1.regras.value) + 1;
+	var tabresult;
+
+	document.getElementById('form2').style.display = 'none';
+	document.getElementById("btnPass").style.display = 'none';
+	document.getElementById("btn3").style.display = 'none';
 	
 	if (validarCoeficientes(variaveis, restricoes) == 1) {
 		return;
 	}
-	esconder(variaveis, restricoes);
-	
-	document.getElementById("btnPass").style.display = 'none';
-	document.getElementById("btn3").style.display = 'none';
+
+
+	document.getElementById("tab").innerHTML+="<div id='result'>";
 	document.getElementById("tab").innerHTML+="<h2>Resolução</h2>";
 	document.getElementById("tab").innerHTML+="<hr/>";
 	matriz = [[]];
@@ -323,7 +291,7 @@ $("#btnPass").on("click",function(e) {
 		ite++;
 	}
 	
-	var solucao = "Solução: ";
+	var solucao = "<center class='mt-5'> <h3> Solução: ";
 	
 	for (var n = 1; n <= variaveis; n++) {
 		var valor = 0;
@@ -343,7 +311,18 @@ $("#btnPass").on("click",function(e) {
 	}
 	var fracao = new Fraction((matriz[linhas][colunas])*-1);
 	var z = fracao.toFraction();
-	solucao += " e Z = "+z;
+	solucao += " e Z = "+z+ "</h3><center>";
 	document.getElementById("tab").innerHTML+="<p><b>"+solucao+"</b></p>";
-	document.getElementById("btn4").type = 'button';
+	document.getElementById("tab").innerHTML+="</div>";
+
+	document.getElementById("btnfim").style.visibility = "visible";
 });
+
+function voltarrestr(){
+	document.getElementById('result').style.display = 'hidden';
+
+	document.getElementById('form2').style.display = 'block';
+	document.getElementById("btnPass").style.display = 'block';
+	document.getElementById("btn3").style.display = 'block';
+	
+}
