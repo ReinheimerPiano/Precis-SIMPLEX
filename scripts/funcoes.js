@@ -58,7 +58,7 @@ function calcMatriz(p_matriz, exibirtab) {
 			var fracao = new Fraction(-1 * aux);
 			var numFormatado = fracao.toFraction();
 			//document.getElementById("tab").innerHTML += "<p>Linha " + i + " = Linha " + i + " + (" + numFormatado + ") * Linha " + indMenor + "</p>";
-			if (i <= nLinhas && exibirtab == true) {
+			if (i == nLinhas && exibirtab == true) {
 				printTabela(p_matriz);
 			}
 		}
@@ -215,13 +215,13 @@ function printTabela(p_matriz) {
 }
 
 // Botão PASSO A PASSO
-$("#btnPass").on("click", function (e) {
+function passPass(p) {
 	var restricoes = parseInt(document.form1.regras.value);
 	var variaveis = parseInt(document.form1.variaveis.value);
 	var linhas = parseInt(document.form1.regras.value) + 1;
 	var colunas = parseInt(document.form1.variaveis.value) + parseInt(document.form1.regras.value) + 1;
 	var tabresult;
-	var ninteracao;
+
 
 	if (document.getElementById('tab').style.display == "none") {
 		document.getElementById('tab').style.display = 'block';
@@ -234,13 +234,15 @@ $("#btnPass").on("click", function (e) {
 	if (validarCoeficientes(variaveis, restricoes) == 1) {
 		return;
 	}
-
+	if (p) {
+		var ninteracao = prompt("Quantas Iterações?", "Todas");
+	}
 
 	document.getElementById("tab").innerHTML += "<h2>Resolução</h2>";
 	document.getElementById("tab").innerHTML += "<hr/>";
 	document.getElementById("tab").innerHTML += "<p><b>Tabela Base</b></p>";
 	mother = [[]];
-	auxmatriz = [[]];
+
 	mother[0][0] = 'Base';
 
 	var indice = 1;
@@ -293,23 +295,37 @@ $("#btnPass").on("click", function (e) {
 	printTabela(mother);
 
 	var totalite = 0;
-	var auxmatriz = mother;
+	var auxmatriz = createCopy(mother);
+
 	while (condicaoParada(auxmatriz)) {
 		calcMatriz(auxmatriz, false);
 		totalite++;
 	}
 
-	if (ninteracao == ""|| ninteracao == null || ninteracao == "Todas" || ninteracao > totalite){ninteracao = totalite}
+	if (ninteracao == "" || ninteracao == null || ninteracao == "Todas" || ninteracao > totalite) { ninteracao = totalite }
 
 	var ite = 1;
+	var ultimo = false;
 
-	while (ite <= ninteracao) {
-		document.getElementById("tab").innerHTML += "<p><b>Iteração " + ite + "</b></p>";
-		calcMatriz(mother, true);
-		ite++;
+	if(p){
+		while (ite <= ninteracao) {
+			document.getElementById("tab").innerHTML += "<p><b>Iteração " + ite + "</b></p>";
+			calcMatriz(mother, true);
+			ite++;
+		}
+	} else{
+		while (ite <= ninteracao) {
+			if (ite == ninteracao) {
+				document.getElementById("tab").innerHTML += "<p><b>Iteração " + ite + "</b></p>";
+				ultimo = true;
+			}
+			calcMatriz(mother, ultimo);
+			ite++;
+		}
 	}
 
-	if (ninteracao >= totalite || ninteracao == "Todas") {
+
+	if (ninteracao >= totalite) {
 		var solucao = "<center class='mt-5'> <h3> Solução: ";
 
 		for (var n = 1; n <= variaveis; n++) {
@@ -337,6 +353,13 @@ $("#btnPass").on("click", function (e) {
 	}
 
 	document.getElementById("btnfim").style.visibility = "visible";
+};
+
+$("#btnPass").on("click", function (e) {
+	passPass(true);
+});
+$("#btnDirect").on("click", function (e) {
+	passPass(false);
 });
 
 function voltarrestr() {
@@ -347,4 +370,68 @@ function voltarrestr() {
 	document.getElementById("btnPass").style.display = 'block';
 	document.getElementById("btn3").style.display = 'block';
 
+};
+function respDirect() {
+
 }
+
+function createCopy(matrizCopy) {
+	copy = [[]];
+	for (let i = 0; i < matrizCopy.length; i++) {
+		copy[i] = matrizCopy[i].slice();
+	}
+	return copy;
+}
+
+// function getSensibilityTable(final) {
+//     var sensibilityTable = {
+//         labelRow: ["Variável", "Valor Final", "Preço Sombra", "+", "-"],
+//         labelColumn: final.labelRow.concat(["Z"]),
+//         table: Matriz(final.labelRow.length + 1, 4)
+//     };
+//     // VALOR FINAL
+//     for (let index = 0; index <= final.labelColumn.length; index++) {
+//         let i = sensibilityTable.labelColumn.indexOf(final.labelColumn[index]);
+//         sensibilityTable.table[i >= 0 ? i : (sensibilityTable.labelColumn.length - 1)][0] = (final.tableau[index + 1] || final.tableau[0])[0];
+//     }
+//     // PREÇO SOMBRA
+//     for (let index = 0; index < sensibilityTable.labelColumn.length; index++) {
+//         sensibilityTable.table[index][1] = "-";
+//         if (sensibilityTable.labelColumn[index].match(/^f/)) {
+//             sensibilityTable.table[index][1] = final.tableau[0][(index + 1) % sensibilityTable.labelColumn.length];
+//         }
+//     }
+//     // Calcular + e - 
+//     let firstColumn = final.labelRow.indexOf("f1") + 1;
+//     for (let index = 0, total = sensibilityTable.labelColumn.length; index < total; index++) {
+//         sensibilityTable.table[index][2] = "-";
+//         sensibilityTable.table[index][3] = "-";
+
+//         if (index >= firstColumn && (total) > index) {
+//             let divide = final.tableau[1][0];
+//             let maior = (divide) / (final.tableau[1][index]), menor = (divide) / (final.tableau[1][index]);
+
+//             for (let l = 1; l <= final.labelColumn.length; l++) {
+//                 let divide = final.tableau[l][0];
+//                 const element = final.tableau[l][index];
+//                 let mn = (divide) / (element), mx = (divide) / (element);
+//                 if (Math.abs(mn) !== Infinity) {
+//                     if (mn < menor) {
+//                         menor = mn;
+//                     }
+//                     if (mx > maior) {
+//                         maior = mx;
+//                     }
+//                 }
+//             }
+//             sensibilityTable.table[index - 1][2] = Math.abs(maior);
+//             sensibilityTable.table[index - 1][3] = Math.abs(menor);
+//             if (final.labelColumn.indexOf(final.labelRow[index]) >= 0){
+//                 sensibilityTable.table[index - 1][2] = Math.abs(menor);
+//                 sensibilityTable.table[index - 1][3] = Math.abs(maior);
+//             }
+//         }
+
+//     }
+//     return sensibilityTable;
+// }
