@@ -82,4 +82,4 @@ Coloque o número de variáveis e restrições;
 Coloque os valores das restrições;
 Calcule o resultado.
 TESTE ONLINE!
-Esse projeto está rodando em: https://reinheimerpiano.github.io/precis/
+Esse projeto está rodando em: https://reinheimerpiano.github.io/Precis-SIMPLEX/simplex/simplex.html
